@@ -1,0 +1,118 @@
+//Name: Oscar Cabrera
+// Date: 04/20/2023
+//Project 8 Goat Grooming Queue
+
+#include <iostream>
+#include "Goat.h"
+#include <deque>
+#include <fstream>
+using namespace std;
+
+void add(deque<Goat> &, Goat);
+void serve(deque<Goat> &);
+void vip(deque<Goat> &, Goat);
+void print(deque<Goat>);
+
+int main() {
+    srand(time(0));
+    deque<Goat> line; // Deque goat line
+    ifstream fin("goat_grooming.txt");
+
+    // Initially admit 2 goats to the line, before the first round
+    for(int i = 0; i < 2; i++){ 
+        string goatName;
+        int goatAge;
+        string goatColor;
+        fin >> goatName >> goatAge >> goatColor;
+        Goat myGoat0(goatName, goatAge, goatColor);
+        add(line, myGoat0);
+    }
+
+    // Conducting 10 rounds
+    for(int i = 0; i < 10; i++){
+        // if the number of goats in line ever reaches 0, always add a goat to the line
+        if(line.size() == 0){
+            string goatName;
+            int goatAge;
+            string goatColor;
+            fin >> goatName >> goatAge >> goatColor; // Getting my name, age, and color from the file
+            Goat myGoat0(goatName, goatAge, goatColor); // Creating a New goat
+            add(line, myGoat0); // Add function
+        }
+        // Professor Bowe helped understand the percentage probabilities
+        else{
+            int randN = rand() % 100;
+            if(randN < 45){ // 45% probability
+                string goatName;
+                int goatAge;
+                string goatColor;
+                fin >> goatName >> goatAge >> goatColor;
+                Goat myGoat0(goatName, goatAge, goatColor);
+                add(line, myGoat0);
+            }
+            else if(randN < 90){ // Any numbers from 45-90
+                serve(line); // Serve function
+            }
+            // Remaining 10%
+            else{
+                string goatName;
+                int goatAge;
+                string goatColor;
+                fin >> goatName >> goatAge >> goatColor;
+                Goat myGoat0(goatName, goatAge, goatColor);
+                vip(line, myGoat0); // VIP function
+                
+            }
+            
+        }
+    
+    }
+    // Groomings almost closing after 10 rounds
+    cout << "\nThe groomers are closing. No more goats can join the line.\n\n";
+    while(line.size() != 0){
+        serve(line);
+    }
+    fin.close();
+
+    return 0;
+  
+}
+
+// Print function
+void print(deque<Goat> d) {
+    for (auto val : d) {
+        cout << val.getName() << " ";
+    }
+    cout << endl;
+}
+
+// Adding function
+void add(deque<Goat> &g, Goat nm){
+    g.push_back(nm);
+    cout << "New goat: " << nm.getName() << " (Front: " << g.front().getName() << ", back: " << g.back().getName() << ")"<< endl;
+    print(g);
+    cout << endl;
+}
+
+// Serve function
+void serve(deque<Goat> &g1) {
+    cout << "Served: " << g1.front().getName();
+    g1.pop_front();
+    if (g1.size() != 0) {
+        cout << " (Front: " << g1.front().getName() << " " << ", back: " << g1.back().getName() << " " << ")" << endl;
+        cout << "Queue: ";
+        print(g1);
+        cout << endl;
+    }
+    else
+        cout << "\nQueue is now empty.\n\n";
+    
+}
+
+// Important goat function. I call it the "VIP function."
+void vip(deque<Goat> &g2, Goat nm){
+    g2.push_front(nm);
+    cout << "New goat: " << nm.getName() << " (Front: " << g2.front().getName() << ", back: " << g2.back().getName() << ")"<< endl;
+    print(g2);
+    cout << endl;
+}
